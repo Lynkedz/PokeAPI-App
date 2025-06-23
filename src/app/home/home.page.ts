@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonInfiniteScroll, IonInfiniteScrollContent, IonSearchbar, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonGrid, IonRow, IonCol, IonImg } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonLabel, IonButtons, IonToggle } from '@ionic/angular/standalone';
 import { PokeapiService } from '../services/pokeapi.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { forkJoin } from 'rxjs'; // Importar forkJoin
-import { map } from 'rxjs/operators'; // Importar map
 
 @Component({
   selector: 'app-home',
@@ -15,74 +13,59 @@ import { map } from 'rxjs/operators'; // Importar map
     IonToolbar,
     IonTitle,
     IonContent,
-    IonList,
-    IonItem,
     IonLabel,
-    IonInfiniteScroll,
-    IonInfiniteScrollContent,
-    IonSearchbar,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardSubtitle,
-    IonCardContent,
-    IonGrid,
-    IonRow,
-    IonCol,
-    IonImg,
+    IonButtons,
+    IonToggle,
     CommonModule,
     FormsModule
   ],
 })
 export class HomePage implements OnInit {
-  pokemons: any[] = [];
-  filteredPokemons: any[] = [];
-  offset = 0;
-  limit = 20;
-  searchTerm: string = '';
+  selectedPokemon: any;
 
   constructor(private pokeapiService: PokeapiService) {}
 
   ngOnInit() {
-    this.loadPokemons();
   }
 
-  loadPokemons(event?: any) {
-    this.pokeapiService.getPokemon(this.offset, this.limit).subscribe((data: any) => {
-      const newPokemons = data.results;
-      const pokemonDetailRequests = newPokemons.map((pokemon: any) =>
-        this.pokeapiService.getPokemonDetails(pokemon.url)
-      );
-
-      forkJoin(pokemonDetailRequests).pipe(
-        map((detailsArray: any) => detailsArray) // Simplificar a tipagem
-      ).subscribe((detailsArray: any[]) => {
-        this.pokemons = [...this.pokemons, ...detailsArray];
-        this.filteredPokemons = [...this.pokemons]; // Update filtered list
-        this.offset += this.limit;
-        if (event) {
-          event.target.complete();
-        }
-      });
-    });
+  selectPokemonById(id: number) {
+    this.pokeapiService.getPokemonDetails(`https://pokeapi.co/api/v2/pokemon/${id}`).subscribe(
+      (details: any) => {
+        this.selectedPokemon = details;
+      },
+      (error) => {
+        console.error('Pokémon não encontrado:', error);
+        this.selectedPokemon = null;
+      }
+    );
   }
 
-  onSearchChange(event: any) {
-    this.searchTerm = event.detail.value.toLowerCase();
-    this.filterPokemons();
+  searchPokemonByName(name: string) {
+    this.pokeapiService.getPokemonDetails(`https://pokeapi.co/api/v2/pokemon/${name.toLowerCase()}`).subscribe(
+      (details: any) => {
+        this.selectedPokemon = details;
+      },
+      (error) => {
+        console.error('Pokémon não encontrado:', error);
+        this.selectedPokemon = null;
+      }
+    );
   }
 
-  filterPokemons() {
-    if (this.searchTerm === '') {
-      this.filteredPokemons = [...this.pokemons];
+  toggleTheme(event: any) {
+    document.body.classList.toggle('dark', event.detail.checked);
+  }
+
+  onSearchInputChange(event: any) {
+    const searchTerm = event.detail.value;
+    if (searchTerm) {
+      if (!isNaN(Number(searchTerm))) {
+        this.selectPokemonById(Number(searchTerm));
+      } else {
+        this.searchPokemonByName(searchTerm);
+      }
     } else {
-      this.filteredPokemons = this.pokemons.filter(pokemon =>
-        pokemon.name.toLowerCase().includes(this.searchTerm)
-      );
+      this.selectedPokemon = null;
     }
-  }
-
-  loadData(event: any) {
-    this.loadPokemons(event);
   }
 }

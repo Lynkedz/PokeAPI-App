@@ -1,54 +1,80 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      PokeApp
-    </ion-title>
+    <ion-title>PokeApp</ion-title>
+    <ion-buttons slot="end">
+      <ion-toggle (ionChange)="toggleTheme($event)" justify="end">Modo Escuro</ion-toggle>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">PokeApp</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-content [fullscreen]="true">
+    <div class="pokedex">
+      <div class="left">
+        <div class="camera"></div>
+        <div class="leds">
+          <span class="red"></span>
+          <span class="yellow"></span>
+          <span class="green"></span>
+        </div>
+        <div class="screen">
+          <div *ngIf="selectedPokemon" class="pokemon-display-left">
+            <img [src]="selectedPokemon.sprites?.front_default" alt="{{ selectedPokemon.name }}" onerror="this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/0.png'">
+            <h2>{{ selectedPokemon.name | titlecase }}</h2>
+          </div>
+          <div *ngIf="!selectedPokemon" class="no-pokemon-selected-left">
+            <p>Selecione um Pokémon.</p>
+          </div>
+          <ion-input
+            placeholder="Pesquisar por ID ou Nome"
+            (ionChange)="onSearchInputChange($event)"
+            class="search-input"
+          ></ion-input>
+        </div>
+        <div class="button-round"></div>
+        <div class="button-bar"></div>
+        <div class="button-bar blue"></div>
+        <div class="slot"></div>
+        <div class="dpad"></div>
+      </div>
 
-  <ion-searchbar
-    placeholder="Pesquisar Pokémon"
-    [debounce]="500"
-    (ionInput)="onSearchChange($event)"
-  ></ion-searchbar>
+      <div class="hinge"></div>
 
-  <ion-grid>
-    <ion-row>
-      <ion-col size="6" size-md="4" size-lg="3" *ngFor="let pokemon of filteredPokemons">
-        <ion-card>
-          <ion-img [src]="pokemon.sprites.front_default" alt="{{ pokemon.name }}"></ion-img>
-          <ion-card-header>
-            <ion-card-title>{{ pokemon.name | titlecase }}</ion-card-title>
-            <ion-card-subtitle>ID: #{{ pokemon.id }}</ion-card-subtitle>
-          </ion-card-header>
-          <ion-card-content>
+      <div class="right">
+        <div class="display">
+          <div *ngIf="selectedPokemon" class="pokemon-details-right">
+            <img [src]="selectedPokemon.sprites?.front_default" alt="{{ selectedPokemon.name }}" onerror="this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/0.png'">
+            <h2>{{ selectedPokemon.name | titlecase }}</h2>
+            <p>ID: #{{ selectedPokemon.id }}</p>
+            <p>Altura: {{ selectedPokemon.height / 10 }} m</p>
+            <p>Peso: {{ selectedPokemon.weight / 10 }} kg</p>
             <ion-label>Tipos:</ion-label>
             <ul>
-              <li *ngFor="let type of pokemon.types">{{ type.type.name | titlecase }}</li>
+              <li *ngFor="let type of selectedPokemon.types">{{ type.type.name | titlecase }}</li>
             </ul>
-            <ion-label>Altura: {{ pokemon.height / 10 }} m</ion-label>
-            <ion-label>Peso: {{ pokemon.weight / 10 }} kg</ion-label>
             <ion-label>Habilidades:</ion-label>
             <ul>
-              <li *ngFor="let ability of pokemon.abilities">{{ ability.ability.name | titlecase }}</li>
+              <li *ngFor="let ability of selectedPokemon.abilities">{{ ability.ability.name | titlecase }}</li>
             </ul>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+          </div>
+          <div *ngIf="!selectedPokemon" class="no-pokemon-selected-right">
+            <p>Selecione um Pokémon para ver os detalhes.</p>
+          </div>
+        </div>
 
-  <ion-infinite-scroll (ionInfinite)="loadData($event)">
-    <ion-infinite-scroll-content
-      loadingSpinner="bubbles"
-      loadingText="Carregando Pokémon..."
-    ></ion-infinite-scroll-content>
-  </ion-infinite-scroll>
-</ion-content>
+        <div class="grid">
+          <div></div><div></div><div></div><div></div>
+          <div></div><div></div><div></div><div></div>
+        </div>
+
+        <div class="white-keys">
+          <div></div><div></div>
+        </div>
+
+        <div class="gold-btn"></div>
+
+        <div class="bottom">
+          <div></div><div></div>
+        </div>
+      </div>
+    </div>
+  </ion-content>
