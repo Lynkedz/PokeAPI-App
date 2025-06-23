@@ -1,13 +1,12 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>PokeApp</ion-title>
-    <ion-buttons slot="end">
-      <ion-toggle (ionChange)="toggleTheme($event)" justify="end">Modo Escuro</ion-toggle>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button [class.dark-mode-button]="isDarkTheme()" [class.light-mode-button]="!isDarkTheme()">
+      <ion-toggle (ionChange)="toggleTheme($event)" justify="end">
+        <ion-icon slot="start" [name]="isDarkTheme() ? 'flash-outline' : 'ellipse-outline'"></ion-icon>
+        Modo Escuro
+      </ion-toggle>
+    </ion-fab-button>
+  </ion-fab>
   <div class="main-container">
     <div class="search-section">
       <ion-input
@@ -49,8 +48,8 @@
         <h3>Evolution Chain:</h3>
         <div *ngIf="evolutionChain" class="evolution-chain">
           <span *ngFor="let evo of evolutionChain; let i = index">
-            <a (click)="loadPokemon(evo.id)">{{ formatName(evo.name) | titlecase }}</a>
-            <span *ngIf="i < evolutionChain.length - 1"> -> </span>
+            {{ formatName(evo.name) | titlecase }}
+            <span *ngIf="i < evolutionChain.length - 1"> </span>
           </span>
         </div>
         <p *ngIf="!evolutionChain">No evolution information available.</p>
@@ -68,7 +67,7 @@
         <p *ngIf="selectedPokemon.forms.length === 0">No forms.</p>
 
         <h3>Cries:</h3>
-        <audio *ngIf="selectedPokemon.cries?.latest" controls>
+        <audio *ngIf="selectedPokemon.cries?.latest && selectedPokemon.id" controls>
           <source [src]="selectedPokemon.cries.latest" type="audio/ogg">
           Your browser does not support the audio element.
         </audio>

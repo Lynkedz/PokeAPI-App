@@ -30,3 +30,8 @@ main {
   padding: 15px;
   position: relative;
 }
+
+ion-toggle::part(handle) {
+  transform: none !important;
+  transition: none !important;
+}

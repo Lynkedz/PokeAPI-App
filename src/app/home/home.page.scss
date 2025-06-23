@@ -1,5 +1,5 @@
 ion-content {
-  --background: var(--ion-background-color);
+  --background: url('../../assets/forest.png') no-repeat center center / cover;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -99,6 +99,12 @@ ion-content {
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
+.pokemon-details audio {
+  background-color: var(--pokemon-display-bg);
+  border-radius: 8px;
+  padding: 5px;
+}
+
 .no-pokemon-selected {
   color: var(--pokemon-details-color);
   padding-top: 50px;
@@ -118,4 +124,35 @@ ion-content {
   border-radius: 5px;
   font-size: 0.9em;
   color: var(--pokemon-tag-color);
+}
+
+ion-fab-button ion-toggle {
+  --handle-background: white;
+  --handle-background-checked: white;
+  --handle-box-shadow: none;
+}
+
+ion-fab-button ion-toggle::part(handle) {
+  transform: none !important;
+  transition: none !important;
+}
+
+.dark-mode-button {
+  --background: linear-gradient(to bottom, black 50%, yellow 50%);
+  --background-activated: linear-gradient(to bottom, black 50%, yellow 50%);
+  --background-hover: linear-gradient(to bottom, black 50%, yellow 50%);
+  --background-focused: linear-gradient(to bottom, black 50%, yellow 50%);
+  color: white;
+}
+
+.light-mode-button {
+  --background: linear-gradient(to bottom, red 50%, white 50%);
+  --background-activated: linear-gradient(to bottom, red 50%, white 50%);
+  --background-hover: linear-gradient(to bottom, red 50%, white 50%);
+  --background-focused: linear-gradient(to bottom, red 50%, white 50%);
+  color: black;
+}
+
+ion-fab[horizontal="end"] {
+  right: 20px;
 }
