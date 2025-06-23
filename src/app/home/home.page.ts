@@ -3,6 +3,8 @@ import { IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel
 import { PokeapiService } from '../services/pokeapi.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { forkJoin } from 'rxjs'; // Importar forkJoin
+import { map } from 'rxjs/operators'; // Importar map
 
 @Component({
   selector: 'app-home',
@@ -48,16 +50,20 @@ export class HomePage implements OnInit {
   loadPokemons(event?: any) {
     this.pokeapiService.getPokemon(this.offset, this.limit).subscribe((data: any) => {
       const newPokemons = data.results;
-      newPokemons.forEach((pokemon: any) => {
-        this.pokeapiService.getPokemonDetails(pokemon.url).subscribe((details: any) => {
-          this.pokemons.push(details);
-          this.filteredPokemons = [...this.pokemons]; // Update filtered list
-        });
+      const pokemonDetailRequests = newPokemons.map((pokemon: any) =>
+        this.pokeapiService.getPokemonDetails(pokemon.url)
+      );
+
+      forkJoin(pokemonDetailRequests).pipe(
+        map((detailsArray: any) => detailsArray) // Simplificar a tipagem
+      ).subscribe((detailsArray: any[]) => {
+        this.pokemons = [...this.pokemons, ...detailsArray];
+        this.filteredPokemons = [...this.pokemons]; // Update filtered list
+        this.offset += this.limit;
+        if (event) {
+          event.target.complete();
+        }
       });
-      this.offset += this.limit;
-      if (event) {
-        event.target.complete();
-      }
     });
   }
 

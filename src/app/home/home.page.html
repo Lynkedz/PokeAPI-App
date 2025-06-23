@@ -33,6 +33,12 @@
             <ul>
               <li *ngFor="let type of pokemon.types">{{ type.type.name | titlecase }}</li>
             </ul>
+            <ion-label>Altura: {{ pokemon.height / 10 }} m</ion-label>
+            <ion-label>Peso: {{ pokemon.weight / 10 }} kg</ion-label>
+            <ion-label>Habilidades:</ion-label>
+            <ul>
+              <li *ngFor="let ability of pokemon.abilities">{{ ability.ability.name | titlecase }}</li>
+            </ul>
           </ion-card-content>
         </ion-card>
       </ion-col>
