@@ -7,74 +7,77 @@
   </ion-toolbar>
 </ion-header>
 
-  <ion-content [fullscreen]="true">
-    <div class="pokedex">
-      <div class="left">
-        <div class="camera"></div>
-        <div class="leds">
-          <span class="red"></span>
-          <span class="yellow"></span>
-          <span class="green"></span>
+<ion-content [fullscreen]="true">
+  <div class="main-container">
+    <div class="search-section">
+      <ion-input
+        placeholder="Pesquisar por ID ou Nome"
+        (input)="onSearchInputChange($event)"
+        class="search-input"
+      ></ion-input>
+    </div>
+
+    <div class="pokemon-details-section">
+      <div *ngIf="selectedPokemon" class="pokemon-details">
+        <h2>{{ selectedPokemon.name | titlecase }} #{{ selectedPokemon.id }}</h2>
+        <img [src]="selectedPokemon.sprites?.front_default" alt="{{ selectedPokemon.name }}" onerror="this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/0.png'">
+
+        <p><strong>Base Experience:</strong> {{ selectedPokemon.base_experience }}</p>
+        <p><strong>Height:</strong> {{ selectedPokemon.height / 10 }} m</p>
+        <p><strong>Weight:</strong> {{ selectedPokemon.weight / 10 }} kg</p>
+
+        <h3>Types:</h3>
+        <ul>
+          <li *ngFor="let type of selectedPokemon.types" [ngStyle]="{'background-color': typeColors[type.type.name]}">{{ type.type.name | titlecase }}</li>
+        </ul>
+
+        <h3>Abilities:</h3>
+        <ul>
+          <li *ngFor="let ability of selectedPokemon.abilities">{{ ability.ability.name | titlecase }} <span *ngIf="ability.is_hidden">(Hidden)</span></li>
+        </ul>
+
+        <h3>Stats:</h3>
+        <ul>
+          <li *ngFor="let stat of selectedPokemon.stats">{{ stat.stat.name | titlecase }}: {{ stat.base_stat }}</li>
+        </ul>
+
+        <h3>Moves:</h3>
+        <ul>
+          <li *ngFor="let move of selectedPokemon.moves | slice:0:20">{{ getFormattedMoveName(move) | titlecase }}</li>
+        </ul>
+
+        <h3>Evolution Chain:</h3>
+        <div *ngIf="evolutionChain" class="evolution-chain">
+          <span *ngFor="let evo of evolutionChain; let i = index">
+            <a (click)="loadPokemon(evo.id)">{{ formatName(evo.name) | titlecase }}</a>
+            <span *ngIf="i < evolutionChain.length - 1"> -> </span>
+          </span>
         </div>
-        <div class="screen">
-          <div *ngIf="selectedPokemon" class="pokemon-display-left">
-            <img [src]="selectedPokemon.sprites?.front_default" alt="{{ selectedPokemon.name }}" onerror="this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/0.png'">
-            <h2>{{ selectedPokemon.name | titlecase }}</h2>
-          </div>
-          <div *ngIf="!selectedPokemon" class="no-pokemon-selected-left">
-            <p>Selecione um Pokémon.</p>
-          </div>
-          <ion-input
-            placeholder="Pesquisar por ID ou Nome"
-            (ionChange)="onSearchInputChange($event)"
-            class="search-input"
-          ></ion-input>
-        </div>
-        <div class="button-round"></div>
-        <div class="button-bar"></div>
-        <div class="button-bar blue"></div>
-        <div class="slot"></div>
-        <div class="dpad"></div>
+        <p *ngIf="!evolutionChain">No evolution information available.</p>
+
+        <h3>Held Items:</h3>
+        <ul *ngIf="selectedPokemon.held_items.length > 0">
+          <li *ngFor="let item of selectedPokemon.held_items">{{ formatName(item.item.name) | titlecase }}</li>
+        </ul>
+        <p *ngIf="selectedPokemon.held_items.length === 0">No held items.</p>
+
+        <h3>Forms:</h3>
+        <ul *ngIf="selectedPokemon.forms.length > 0">
+          <li *ngFor="let form of selectedPokemon.forms">{{ formatName(form.name) | titlecase }}</li>
+        </ul>
+        <p *ngIf="selectedPokemon.forms.length === 0">No forms.</p>
+
+        <h3>Cries:</h3>
+        <audio *ngIf="selectedPokemon.cries?.latest" controls>
+          <source [src]="selectedPokemon.cries.latest" type="audio/ogg">
+          Your browser does not support the audio element.
+        </audio>
+        <p *ngIf="!selectedPokemon.cries?.latest">No cry available.</p>
+
       </div>
-
-      <div class="hinge"></div>
-
-      <div class="right">
-        <div class="display">
-          <div *ngIf="selectedPokemon" class="pokemon-details-right">
-            <img [src]="selectedPokemon.sprites?.front_default" alt="{{ selectedPokemon.name }}" onerror="this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/0.png'">
-            <h2>{{ selectedPokemon.name | titlecase }}</h2>
-            <p>ID: #{{ selectedPokemon.id }}</p>
-            <p>Altura: {{ selectedPokemon.height / 10 }} m</p>
-            <p>Peso: {{ selectedPokemon.weight / 10 }} kg</p>
-            <ion-label>Tipos:</ion-label>
-            <ul>
-              <li *ngFor="let type of selectedPokemon.types">{{ type.type.name | titlecase }}</li>
-            </ul>
-            <ion-label>Habilidades:</ion-label>
-            <ul>
-              <li *ngFor="let ability of selectedPokemon.abilities">{{ ability.ability.name | titlecase }}</li>
-            </ul>
-          </div>
-          <div *ngIf="!selectedPokemon" class="no-pokemon-selected-right">
-            <p>Selecione um Pokémon para ver os detalhes.</p>
-          </div>
-        </div>
-
-        <div class="grid">
-          <div></div><div></div><div></div><div></div>
-          <div></div><div></div><div></div><div></div>
-        </div>
-
-        <div class="white-keys">
-          <div></div><div></div>
-        </div>
-
-        <div class="gold-btn"></div>
-
-        <div class="bottom">
-          <div></div><div></div>
-        </div>
+      <div *ngIf="!selectedPokemon" class="no-pokemon-selected">
+        <p>Search for a Pokémon to see details.</p>
       </div>
     </div>
-  </ion-content>
+  </div>
+</ion-content>

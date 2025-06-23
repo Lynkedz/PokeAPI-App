@@ -62,14 +62,46 @@
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
 
-  --pokemon-center-red: #cc0000;
-  --pokemon-center-white: #ffffff;
-  --pokemon-center-blue: #007bff;
-  --pokemon-center-gray: #f0f0f0;
-  --pokemon-center-dark-gray: #333333;
+
+  --ion-background-color: #f0f0f0; 
+  --ion-toolbar-background: #ff0000; 
+  --ion-toolbar-color: #ffffff; 
+
+  --pokemon-display-bg: #ffffff;
+  --pokemon-display-border: #cccccc;
+  --pokemon-details-color: #333333;
+  --pokemon-image-bg: #e0e0e0;
+  --pokemon-image-border: #999999;
+  --pokemon-tag-bg: #dddddd;
+  --pokemon-tag-color: #555555;
+  --pokemon-type-text-color: #000000;
+
+  --search-input-bg: #ffffff;
+  --search-input-color: #333333;
+  --search-input-placeholder: #999999;
+  --search-input-border: #666666;
 }
 
 body.dark {
+  
+  --ion-background-color: #333333; 
+  --ion-toolbar-background: #000000;
+  --ion-toolbar-color: #ffcc00; 
+
+  --pokemon-display-bg: #444444;
+  --pokemon-display-border: #777777;
+  --pokemon-details-color: #ffffff;
+  --pokemon-image-bg: #555555;
+  --pokemon-image-border: #aaaaaa;
+  --pokemon-tag-bg: #666666;
+  --pokemon-tag-color: #ffffff;
+  --pokemon-type-text-color: #ffffff;
+
+  --search-input-bg: #555555;
+  --search-input-color: #ffffff;
+  --search-input-placeholder: #bbbbbb;
+  --search-input-border: #999999;
+
   --ion-color-primary: #428cff;
   --ion-color-primary-rgb: 66,140,255;
   --ion-color-primary-contrast: #ffffff;
@@ -132,10 +164,4 @@ body.dark {
   --ion-color-light-contrast-rgb: 255,255,255;
   --ion-color-light-shade: #1e2023;
   --ion-color-light-tint: #383a3e;
-
-  --pokemon-center-red: #8b0000;
-  --pokemon-center-white: #333333;
-  --pokemon-center-blue: #004d99;
-  --pokemon-center-gray: #222222;
-  --pokemon-center-dark-gray: #000000;
 }
